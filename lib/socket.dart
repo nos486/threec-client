@@ -4,7 +4,6 @@ import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threec/models/Chat.dart';
 import 'package:threec/models/Message.dart';
 import 'package:threec/models/User.dart';
-import 'package:threec/models/server.dart';
 import 'package:threec/services/urls.dart';
 import 'package:threec/store.dart';
 

@@ -29,6 +29,8 @@ class Message extends HiveObject{
   // file = null;
   @HiveField(7)
   DateTime createdAt;
+  bool decrypted = false;
+  String decryptedText ;
 
   Message();
 }
@@ -49,6 +51,7 @@ class MessageAdapter extends TypeAdapter<Message> {
     message.text = reader.read();
     message.hash = reader.read();
     message.createdAt = reader.read();
+    print(message.text);
 
     return message;
   }

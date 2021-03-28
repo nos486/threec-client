@@ -1,4 +1,4 @@
-import 'package:encrypt/encrypt.dart' as EN;
+import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
 import 'package:threec/screens/chat/chat.dart';
 import 'package:threec/screens/home/HomeLayout.dart';
@@ -75,18 +75,6 @@ class _HomeState extends State<Home> {
   }
 
   Widget homeLayout({bool isWide=false}){
-    final plainText = '123';
-    final key = EN.Key.fromUtf8('1234567890123456');
-    final iv = EN.IV.fromUtf8("1234567890123456");
-
-    final encrypter = EN.Encrypter(EN.AES(key, iv, mode: EN.AESMode.ecb));
-
-    final encrypted = encrypter.encrypt(plainText);
-    final decrypted = encrypter.decrypt(encrypted);
-
-    print(decrypted); // Lorem ipsum dolor sit amet, consectetur adipiscing elit
-    print(encrypted.base64); // R4PxiU3h8YoIRqVowBXm36ZcCeNeZ4s1Ov
-
     return HomeLayout(chats: chats, selectedChatUpdate: (Chat chat){
       Store().storeBox.put("selectedChatId", chat.id) ;
       setState(() {

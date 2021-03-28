@@ -36,7 +36,6 @@ class _EncryptionDialogState extends State<EncryptionDialog> {
   Widget build(BuildContext context) {
 
     return Dialog(
-
         child: Container(
           width: double.infinity,
           constraints: BoxConstraints(
@@ -48,8 +47,15 @@ class _EncryptionDialogState extends State<EncryptionDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text("Encryption Settings",
-                  style: TextStyle(fontSize: 16),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Icon(Icons.enhanced_encryption),
+                  SizedBox(width: 4,),
+                  Text("Encryption Settings",
+                      style: TextStyle(fontSize: 17,fontWeight: FontWeight.bold, ),
+                  ),
+                ],
               ),
               Divider(height: 32,),
               ListView(
@@ -66,9 +72,11 @@ class _EncryptionDialogState extends State<EncryptionDialog> {
                           icon: Icon(_obscureText ? Icons.visibility : Icons.visibility_off),
                           onPressed: ()=> _toggle(),
                         ),
-                        border: OutlineInputBorder(),
+                        // border: OutlineInputBorder(),
                         labelText: 'Encryption Key',
-                        hintText: 'Enter key for encryption'),
+                        hintText: 'Enter key for encryption',
+                      helperText: 'This key will be used for encrypting your messages.'
+                    ),
                   ),
                   SizedBox(height: 16,),
                   ElevatedButton(onPressed: ()=> _save(), child: Text("Save",style: TextStyle(color: Colors.white),))
