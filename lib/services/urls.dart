@@ -1,4 +1,5 @@
-String baseUrl = "http://localhost:3000";
+String baseUrl = "http://192.168.88.131:3000";
+// String baseUrl = "http://threec-node.herokuapp.com";
 String apiUrl = "$baseUrl/api/v1";
 
 String loginPath = "$apiUrl/user/token/";

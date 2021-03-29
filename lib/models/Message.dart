@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:threec/models/Chat.dart';
 import 'package:threec/models/User.dart';
 import 'package:threec/store.dart';
+import 'package:threec/utils/encryption.dart';
 
 enum MessageType {
   text,
@@ -33,6 +34,11 @@ class Message extends HiveObject{
   String decryptedText ;
 
   Message();
+
+  decrypt(){
+    print("dec");
+    Encryption().decryptMessage(this);
+  }
 }
 
 
@@ -51,7 +57,6 @@ class MessageAdapter extends TypeAdapter<Message> {
     message.text = reader.read();
     message.hash = reader.read();
     message.createdAt = reader.read();
-    print(message.text);
 
     return message;
   }

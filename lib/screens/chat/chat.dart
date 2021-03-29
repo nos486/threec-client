@@ -4,6 +4,7 @@ import 'package:threec/models/Message.dart';
 import 'package:threec/models/User.dart';
 import 'package:threec/screens/chat/local_widgets/chat_input.dart';
 import 'package:threec/screens/chat/local_widgets/message.dart';
+import 'package:threec/socket.dart';
 
 class MessageLayout extends StatefulWidget {
 
@@ -16,6 +17,15 @@ class MessageLayout extends StatefulWidget {
 }
 
 class _MessageLayoutState extends State<MessageLayout> {
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    WS().chatRefresh = (){
+      setState(() {});
+    };
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +49,7 @@ class _MessageLayoutState extends State<MessageLayout> {
                 children: [
                   for(Message message in widget.chat.messages.reversed)
                     // Text(message.author.username)
-                    MessageWidget(message: message, user: widget.user)
+                    MessageWidget(message: message, user: widget.user,refresh: (){setState(() {});},)
                 ],
               ),
             ),

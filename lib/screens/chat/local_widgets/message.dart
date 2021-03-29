@@ -1,10 +1,12 @@
 
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threec/models/Message.dart';
 import 'package:threec/models/User.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:threec/screens/chat/local_widgets/message_content.dart';
 import 'package:threec/screens/chat/local_widgets/message_decryptor.dart';
+import 'package:threec/socket.dart';
 
 enum MessageMenu { reply,remove, copy}
 
@@ -13,8 +15,10 @@ class MessageWidget extends StatefulWidget {
     Key key,
     @required this.message,
     @required this.user,
+    @required this.refresh,
   }) : super(key: key);
 
+  final Function refresh;
   final Message message;
   final User user;
 
@@ -23,6 +27,8 @@ class MessageWidget extends StatefulWidget {
 }
 
 class _MessageWidgetState extends State<MessageWidget> {
+  Socket socket = WS().socket ;
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -40,7 +46,21 @@ class _MessageWidgetState extends State<MessageWidget> {
                   radius: 16,
                   backgroundColor: Colors.cyan.shade100,
                 ),
-                onSelected: (MessageMenu result) { setState(() { print(result);}); },
+                onSelected: (MessageMenu result) {
+                  switch (result){
+                    case MessageMenu.reply:
+                      // TODO: Handle this case.
+                      break;
+                    case MessageMenu.remove:
+                      socket.emit("deleteMessage",widget.message.id);
+                      // widget.message.delete();
+                      // widget.refresh();
+                      break;
+                    case MessageMenu.copy:
+                      // TODO: Handle this case.
+                      break;
+                  }
+                },
                 itemBuilder: (BuildContext context) => <PopupMenuEntry<MessageMenu>>[
                   const PopupMenuItem<MessageMenu>(
                     value: MessageMenu.reply,

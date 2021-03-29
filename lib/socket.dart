@@ -13,6 +13,7 @@ class WS {
   Socket socket;
   bool firstConnect = true;
   List<Function> chatCallbacks =[];
+  Function chatRefresh = (){};
 
   factory WS() {
     return _socket;
@@ -119,11 +120,25 @@ class WS {
         message.hash =  messageData["hash"];
         message.createdAt = DateTime.parse(messageData["createdAt"]);
 
-        print(Store().userBox.get(messageData["author"]));
+        message.decrypt();
+
         Chat chat = Store().chatBox.get(messageData["chat"]);
         Store().messageBox.put(message.id, message);
         chat.messages.add(message);
+
       }
+
+      chatRefresh();
+
+    });
+
+    socket.on('deleteMessage', (messageData) {
+      Chat chat =  Store().chatBox.get(messageData["chat"]);
+      chat.messages.cast<Message>().removeWhere((message){
+        return message.id == messageData["id"]  ;
+      });
+
+      chatRefresh();
     });
 
     socket.onDisconnect((_) {
