@@ -1,12 +1,10 @@
-import 'package:badges/badges.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
 import 'package:threec/dialogs/encryption.dart';
 import 'package:threec/dialogs/settings.dart';
-import 'package:threec/screens/chat/chat.dart';
-import 'package:threec/models/Chat.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/chat.dart';
+import 'package:threec/models/user.dart';
+import 'package:threec/screens/home/local_widgets/chat_list.dart';
+import 'package:threec/screens/home/local_widgets/socket_status.dart';
 import 'package:threec/socket.dart';
 import 'package:threec/store.dart';
 
@@ -15,16 +13,14 @@ class HomeLayout extends StatefulWidget {
   final List<Chat> chats;
   final User user;
   final Chat selectedChat;
-  final Function selectedChatUpdate;
-  HomeLayout({Key key,@required this.chats, this.selectedChatUpdate, this.isWide= false,@required this.selectedChat,@required this.user}) : super(key: key) ;
+  final Function chatClicked;
+  HomeLayout({Key key,@required this.chats, this.chatClicked, this.isWide= false,@required this.selectedChat,@required this.user}) : super(key: key) ;
 
   @override
   _HomeLayoutState createState() => _HomeLayoutState();
 }
 
 enum MainMenu { encryption ,setting, logout }
-enum ChatMenu { clear ,delete,backup }
-
 
 class _HomeLayoutState extends State<HomeLayout> {
 
@@ -40,92 +36,24 @@ class _HomeLayoutState extends State<HomeLayout> {
       appBar: buildAppBar(),
       body: Column(
         children: [
+          SocketStatus(),
           Expanded(
-            child: ListView(
-              children: [
-                for(Chat chat in widget.chats)
-                  ListTile(
-                    title: Text(chat.name.toUpperCase(),),
-                    // subtitle: Text((chat.lastMessage != null) ? chat.lastMessage.text: "no messages"),
-                    leading: Stack(
-                      children: [
-                        CircleAvatar(
-                          child: Text(chat.name[0].toUpperCase(),style: TextStyle(color: Colors.white),),
-                          backgroundColor: Colors.cyan,
-                        ),
-                        Positioned(
-                          right: 0,
-                          bottom: 0,
-                          child: Container(
-                            height: 12,
-                            width: 12,
-                            decoration: BoxDecoration(
-                                color: Colors.cyan.shade800,
-                                shape: BoxShape.circle,
-                              border: Border.all(
-                                width: 2,
-                                color: Colors.white
-                              )
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
-                    trailing: PopupMenuButton<ChatMenu>(
-                      onSelected: (ChatMenu result) { setState(() { print(result);}); },
-                      itemBuilder: (BuildContext context) => <PopupMenuEntry<ChatMenu>>[
-                        const PopupMenuItem<ChatMenu>(
-                          value: ChatMenu.backup,
-                          child: ListTile(
-                            leading: Icon(Icons.backup),
-                            title: Text('Backup'),
-                          ),
-                        ),
-                        const PopupMenuItem<ChatMenu>(
-                          value: ChatMenu.clear,
-                          child: ListTile(
-                            leading: Icon(Icons.cleaning_services_rounded),
-                            title: Text('Clear Chats'),
-                          ),
-                        ),
-                        const PopupMenuItem<ChatMenu>(
-                          value: ChatMenu.delete,
-                          child: ListTile(
-                            leading: Icon(Icons.delete),
-                            title: Text('Delete Chat'),
-                          ),
-                        ),
-                      ],
-                    ),
-                    onTap: (){
-                      if (widget.isWide){
-                        widget.selectedChatUpdate(chat);
-                      }else{
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => MessageLayout(chat: chat,user: widget.user,)));
-                        widget.selectedChatUpdate(null);
-                      }
-                    },
-                    selected: (widget.selectedChat!=null && widget.selectedChat.id == chat.id),
-                    selectedTileColor: Colors.cyan.shade50,
-                  ),
-              ],
-            ),flex: 4,
+            child: ChatList(
+              chats: widget.chats,
+              selectedChat: widget.selectedChat,
+              chatClicked: (chat) => widget.chatClicked(chat),
+            )
           ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: (){},
         child: Icon(Icons.message,color: Colors.white),
-      ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   elevation: 0,
-      //   items: [
-      //     BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings"),
-      //     BottomNavigationBarItem(icon: Icon(Icons.settings), label: "Settings")
-      //   ],
-      // ),
+      )
     );
   }
+
+
 
   AppBar buildAppBar() {
     return AppBar(
@@ -161,6 +89,8 @@ class _HomeLayoutState extends State<HomeLayout> {
     );
   }
 
+
+  
   PopupMenuButton<MainMenu> buildPopupMenuButtonMain() {
     return PopupMenuButton<MainMenu>(
           onSelected: (MainMenu result) async {
@@ -211,7 +141,5 @@ class _HomeLayoutState extends State<HomeLayout> {
           ],
         );
   }
-
-
 }
 

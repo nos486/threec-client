@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:threec/models/Message.dart';
+import 'package:threec/models/message.dart';
 import 'package:threec/store.dart';
 import 'package:threec/utils/encryption.dart';
 

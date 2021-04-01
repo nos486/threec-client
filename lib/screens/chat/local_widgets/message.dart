@@ -1,8 +1,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:threec/models/Message.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/message.dart';
+import 'package:threec/models/user.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:threec/screens/chat/local_widgets/message_content.dart';
 import 'package:threec/screens/chat/local_widgets/message_decryptor.dart';

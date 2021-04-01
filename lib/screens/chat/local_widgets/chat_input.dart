@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
-import 'package:threec/models/Chat.dart';
+import 'package:threec/models/chat.dart';
 import 'package:threec/screens/chat/local_widgets/mic_input.dart';
 import 'package:threec/socket.dart';
 import 'package:threec/utils/encryption.dart';

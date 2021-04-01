@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:threec/models/Message.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/message.dart';
+import 'package:threec/models/user.dart';
 
 class MessageContent extends StatelessWidget {
   final Message message;

@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/user.dart';
 import 'package:threec/services/connection.dart';
 import 'package:threec/services/urls.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:encrypt/encrypt.dart';
-import 'package:threec/models/Message.dart';
+import 'package:threec/models/message.dart';
 import 'package:threec/store.dart';
 import 'package:crypto/crypto.dart';
 
@@ -45,6 +45,7 @@ class Encryption {
       if (toMd5(decryptedMessage) == message.hash){
         message.decrypted = true;
         message.decryptedText = decryptedMessage;
+
         return true;
       }else{
         return false;

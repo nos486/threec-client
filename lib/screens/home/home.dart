@@ -1,9 +1,10 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
+import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threec/screens/chat/chat.dart';
 import 'package:threec/screens/home/HomeLayout.dart';
-import 'package:threec/models/Chat.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/chat.dart';
+import 'package:threec/models/user.dart';
 
 import 'package:threec/socket.dart';
 import 'package:threec/store.dart';
@@ -18,32 +19,27 @@ class _HomeState extends State<Home> {
   List<Chat> chats = [];
   User user = Store().userBox.get("_self");
   Chat selectedChat ;
-  // Chat selectedChat = Store().chatBox.get(Store().storeBox.get("selectedChatId"));
+  WS ws = WS() ;
 
   @override
   initState() {
     super.initState();
+
     //run after build
     WidgetsBinding.instance.addPostFrameCallback((_){
-      WS().socket.connect();
-      WS().chatCallbacks.add((){
-        setState(() {
-          chats = Store().chatBox.values.toList();
-          selectedChat = Store().chatBox.get(Store().storeBox.get("selectedChatId").toString());
-        });
+      // selectedChat = Store().chatBox.get(Store().storeBox.get("selectedChatId"));
+      ws.socket.connect();
+      // ws.chatRefresh = (){
+      //   print("ee");
+      //   setState(() {
+      //   });
+      // };
+      ws.chatCallbacks.add((){
+        setState(() {});
       });
     });
 
-    // User mina = new User(id: "2321",name:"Mina",email:"");
-    // store.chats[0].newMessages = 33;
-    // store.chats[0].messages = [
-    //   new Message(id: 213,text: "Hi :)",author: store.user,type: MessageType.text,createdAt: new DateTime.now()),
-    //   new Message(id: 2132,text: "Whats up?",author: store.user,type: MessageType.text,createdAt: new DateTime.now()),
-    //   new Message(id: 2113,text: "How are you?",author:mina ,type: MessageType.text,createdAt: new DateTime.now()),
-    //   new Message(id: 21322,text: "Thanks,\nWhat about you ? is anything ok ? :)))",author: store.user,type: MessageType.text,createdAt: new DateTime.now()),
-    // ];
-
-
+    chats = Store().chatBox.values.toList();
   }
 
   @override
@@ -63,7 +59,6 @@ class _HomeState extends State<Home> {
               children: [
                 Expanded(child: homeLayout(isWide: true) ,flex: 4,),
                 Expanded(child: selectedChat != null ? MessageLayout(chat: selectedChat ,user: user,): Placeholder(),flex: 7),
-
                 // Expanded(child: Placeholder(),flex: 7)
               ],
             );
@@ -74,12 +69,40 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget homeLayout({bool isWide=false}){
-    return HomeLayout(chats: chats, selectedChatUpdate: (Chat chat){
-      Store().storeBox.put("selectedChatId", chat.id) ;
+  Widget homeLayout({bool isWide = false}) {
+    return HomeLayout(
+      chats: chats,
+      chatClicked: (Chat chat) {
+        if (isWide){
+          chatChange(chat);
+        }else{
+          Navigator.push(context, MaterialPageRoute(builder: (context) => MessageLayout(chat: chat,user: user,)));
+          chatChange(null);
+        }
+      },isWide: isWide,selectedChat: selectedChat,user: user,);
+  }
+
+  chatChange(Chat chat){
+      Store().storeBox.put("selectedChatId", chat.id);
       setState(() {
-        selectedChat = chat;
+        selectedChat = Store().chatBox.get(chat.id);
+        print(selectedChat.messages.length);
       });
-    },isWide: isWide,selectedChat: selectedChat,user: user,);
+
+      if(chat != null ){
+        if(ws.socket.connected){
+          ws.socket.emit("getMessages",{"chat":chat.id});
+          ws.chatRefresh = (){
+            print("ee");
+            setState(() {
+              selectedChat = Store().chatBox.get(chat.id);
+            });
+          };
+        }
+      }
+
   }
 }
+
+
+

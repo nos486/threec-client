@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:threec/models/Chat.dart';
-import 'package:threec/models/Message.dart';
-import 'package:threec/models/User.dart';
+import 'package:threec/models/chat.dart';
+import 'package:threec/models/message.dart';
+import 'package:threec/models/user.dart';
 import 'package:threec/screens/chat/local_widgets/chat_input.dart';
 import 'package:threec/screens/chat/local_widgets/message.dart';
 import 'package:threec/socket.dart';
@@ -23,6 +23,7 @@ class _MessageLayoutState extends State<MessageLayout> {
     // TODO: implement initState
     super.initState();
     WS().chatRefresh = (){
+      print(widget.chat.id);
       setState(() {});
     };
   }
