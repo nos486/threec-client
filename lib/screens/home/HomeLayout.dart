@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:threec/dialogs/encryption.dart';
 import 'package:threec/dialogs/settings.dart';
 import 'package:threec/models/chat.dart';
@@ -111,6 +112,11 @@ class _HomeLayoutState extends State<HomeLayout> {
                 await Store().userBox.clear();
                 await Store().chatBox.clear();
                 await Store().storeBox.clear();
+                await Store().messageBox.clear();
+                await Hive.deleteFromDisk();
+                await Store().closeBoxes();
+
+                print(2);
                 WS().socket.disconnect();
                 Navigator.pushReplacementNamed(context, '/login');
                 break;

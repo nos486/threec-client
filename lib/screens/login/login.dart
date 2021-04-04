@@ -24,19 +24,16 @@ class _LoginState extends State<Login> {
   @override
   void initState() {
     super.initState();
-    print("after init");
-    // store.userBox.put("sina", new User(name: "sina",id: "222",email: "ssss"));
-
 
     WidgetsBinding.instance.addPostFrameCallback((_){
-
-      if (Store().userBox.containsKey("_self")){
-        Navigator.pushReplacementNamed(context, '/home');
-      }else{
-        updateCaptcha();
-
-      }
-
+      Store().openBoxes().then((_){
+        print(Store().storeBox.get("jwtToken"));
+        if (Store().userBox.containsKey("_self")){
+          Navigator.pushReplacementNamed(context, '/home');
+        }else{
+          updateCaptcha();
+        }
+      });
     });
   }
 
@@ -168,6 +165,8 @@ class _LoginState extends State<Login> {
 
 
         User user = new User(id: res.data["id"], username: res.data["username"], email: res.data["email"]);
+        user.setRole(res.data["role"]);
+
         Store().userBox.put("_self", user);
 
         Store().storeBox.put("jwtToken", res.data["jwtToken"]);

@@ -28,17 +28,16 @@ class _HomeState extends State<Home> {
     //run after build
     WidgetsBinding.instance.addPostFrameCallback((_){
       // selectedChat = Store().chatBox.get(Store().storeBox.get("selectedChatId"));
+      ws.chatRefresh = (){
+        setState(() {
+          chats = Store().chatBox.values.toList();
+        });
+      };
+      ws.socket.io.options["query"] = {'token': Store().storeBox.get("jwtToken")};
       ws.socket.connect();
-      // ws.chatRefresh = (){
-      //   print("ee");
-      //   setState(() {
-      //   });
-      // };
-      ws.chatCallbacks.add((){
-        setState(() {});
-      });
     });
 
+    //load chats from db
     chats = Store().chatBox.values.toList();
   }
 
@@ -92,7 +91,7 @@ class _HomeState extends State<Home> {
       if(chat != null ){
         if(ws.socket.connected){
           ws.socket.emit("getMessages",{"chat":chat.id});
-          ws.chatRefresh = (){
+          ws.messageRefresh = (){
             print("ee");
             setState(() {
               selectedChat = Store().chatBox.get(chat.id);

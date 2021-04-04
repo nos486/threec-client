@@ -1,6 +1,15 @@
 import 'package:hive/hive.dart';
 part "user.g.dart";
 
+@HiveType(typeId : 21)
+enum Role{
+@HiveField(0)
+user,
+
+@HiveField(1)
+admin,
+}
+
 @HiveType(typeId: 1)
 class User extends HiveObject {
   @HiveField(0)
@@ -10,12 +19,25 @@ class User extends HiveObject {
   @HiveField(2)
   String email;
   @HiveField(3)
-  String role;
+  Role role;
 
   User({this.id = "", this.username = "", this.email = ""});
 
+  setRole(String stringRole){
+    switch(stringRole){
+      case "admin":
+        role = Role.admin;
+        break;
+
+      case "user" :
+        role = Role.user;
+        break;
+    }
+  }
   toString() => 'User{id: $id, username: $username}';
 }
+
+
 //
 // class UserAdapter extends TypeAdapter<User> {
 //   @override

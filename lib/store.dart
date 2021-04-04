@@ -34,14 +34,25 @@ class Store {
 
    Hive.registerAdapter(MessageAdapter());
    Hive.registerAdapter(AppAdapter());
+   Hive.registerAdapter(RoleAdapter());
    Hive.registerAdapter(UserAdapter());
    Hive.registerAdapter(ChatAdapter());
 
-   storeBox = await Hive.openBox('store');
-   userBox = await Hive.openBox<User>('users');
-   chatBox = await Hive.openBox<Chat>('chats');
-   messageBox = await Hive.openBox<Message>('messages');
+   await openBoxes();
+  }
 
+  openBoxes() async {
+    storeBox = await Hive.openBox('store');
+    userBox = await Hive.openBox<User>('users');
+    chatBox = await Hive.openBox<Chat>('chats');
+    messageBox = await Hive.openBox<Message>('messages');
+  }
+
+  closeBoxes() async {
+    await storeBox.close();
+    await userBox.close();
+    await chatBox.close();
+    await messageBox.close();
   }
 
 }

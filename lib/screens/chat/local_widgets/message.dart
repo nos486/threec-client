@@ -76,7 +76,7 @@ class _MessageWidgetState extends State<MessageWidget> {
                       title: Text('Copy'),
                     ),
                   ),
-                  const PopupMenuItem<MessageMenu>(
+                  if (widget.user.role == Role.admin || widget.message.author.id == widget.user.id) const PopupMenuItem<MessageMenu>(
                     value: MessageMenu.remove,
                     child: ListTile(
                       leading: Icon(Icons.delete_forever),

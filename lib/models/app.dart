@@ -2,6 +2,7 @@ import 'package:hive/hive.dart';
 import 'package:threec/models/chat.dart';
 part "app.g.dart";
 
+// flutter packages pub run build_runner build
 
 @HiveType(typeId: 0)
 class App extends HiveObject {

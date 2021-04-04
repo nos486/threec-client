@@ -22,7 +22,7 @@ class _MessageLayoutState extends State<MessageLayout> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    WS().chatRefresh = (){
+    WS().messageRefresh = (){
       print(widget.chat.id);
       setState(() {});
     };

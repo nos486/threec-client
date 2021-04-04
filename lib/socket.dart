@@ -14,8 +14,8 @@ class WS {
   static final WS _socket = WS._internal();
   Socket socket;
   bool firstConnect = true;
-  List<Function> chatCallbacks =[];
   Function chatRefresh = (){};
+  Function messageRefresh = (){};
   Function socketIsConnectCallback = (){};
 
   factory WS() {
@@ -32,7 +32,6 @@ class WS {
     socket = io(baseUrl, OptionBuilder()
         .setTransports(['websocket'])
         .disableAutoConnect()
-        .setQuery({'token': Store().storeBox.get("jwtToken")})
         .build()
     );
 
@@ -108,11 +107,6 @@ class WS {
         // socket.emit("getMessages",{"chat":chat.id});
       }
 
-      //chat callback
-      for(Function callback in chatCallbacks){
-        callback();
-      }
-
       chatRefresh();
     });
 
@@ -126,7 +120,7 @@ class WS {
       }
       user.username = userData["username"];
       user.email = userData["email"];
-      user.role = userData["role"];
+      user.setRole(userData["role"]);
 
       Store().userBox.put(userData["id"], user);
     });
@@ -171,7 +165,7 @@ class WS {
         }
       }
 
-      chatRefresh();
+      messageRefresh();
     });
 
     socket.on('deleteMessage', (messageData) {
@@ -180,7 +174,7 @@ class WS {
         return message.id == messageData["id"]  ;
       });
 
-      chatRefresh();
+      messageRefresh();
     });
 
 
