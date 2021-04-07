@@ -6,6 +6,7 @@ import 'package:threec/models/chat.dart';
 import 'package:threec/models/user.dart';
 import 'package:threec/screens/home/local_widgets/chat_list.dart';
 import 'package:threec/screens/home/local_widgets/socket_status.dart';
+import 'package:threec/services/urls.dart';
 import 'package:threec/socket.dart';
 import 'package:threec/store.dart';
 
@@ -65,7 +66,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       title: Row(
         children: [
           CircleAvatar(
-            child: Icon(Icons.accessibility_new_sharp,size: 50,color: Colors.cyan.shade900,),
+            backgroundImage : (widget.user.avatarUint8List != null) ? Image.memory(widget.user.avatarUint8List).image : null,
             backgroundColor: Colors.cyan,
             minRadius: 40.0,
           ),

@@ -16,6 +16,7 @@ class WS {
   bool firstConnect = true;
   Function chatRefresh = (){};
   Function messageRefresh = (){};
+  Function userRefresh = (){};
   Function socketIsConnectCallback = (){};
 
   factory WS() {
@@ -72,15 +73,16 @@ class WS {
       for(var chatData in chatsData){
         print(chatData);
         for(var userId in chatData["users"]){
-
-          if (Store().userBox.keys.contains(userId)){
-            users.add(Store().userBox.get(userId));
-          }else{
-            socket.emit("getUser",userId);
-            User user = new User(id: userId);
-            Store().userBox.put(userId, user);
-            users.add(user);
-          }
+          //todo here
+          socket.emit("getUser",userId);
+          // if (Store().userBox.keys.contains(userId)){
+          //   users.add(Store().userBox.get(userId));
+          // }else{
+          //   socket.emit("getUser",userId);
+          //   User user = new User(id: userId);
+          //   Store().userBox.put(userId, user);
+          //   users.add(user);
+          // }
 
         }
 
@@ -121,8 +123,9 @@ class WS {
       user.username = userData["username"];
       user.email = userData["email"];
       user.setRole(userData["role"]);
-
+      user.updateAvatar();
       Store().userBox.put(userData["id"], user);
+      userRefresh();
     });
 
 
@@ -169,6 +172,7 @@ class WS {
     });
 
     socket.on('deleteMessage', (messageData) {
+      print(messageData);
       Chat chat =  Store().chatBox.get(messageData["chat"]);
       chat.messages.cast<Message>().removeWhere((message){
         return message.id == messageData["id"]  ;

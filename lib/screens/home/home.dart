@@ -17,7 +17,8 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List<Chat> chats = [];
-  User user = Store().userBox.get("_self");
+  String userId = Store().storeBox.get("userId");
+  User user ;
   Chat selectedChat ;
   WS ws = WS() ;
 
@@ -33,11 +34,19 @@ class _HomeState extends State<Home> {
           chats = Store().chatBox.values.toList();
         });
       };
+      ws.userRefresh = (){
+        setState(() {
+          user = Store().userBox.get(userId);
+          print(Store().userBox.keys);
+        });
+      };
+
       ws.socket.io.options["query"] = {'token': Store().storeBox.get("jwtToken")};
       ws.socket.connect();
     });
 
     //load chats from db
+    user = Store().userBox.get(userId);
     chats = Store().chatBox.values.toList();
   }
 

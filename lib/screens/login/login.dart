@@ -28,7 +28,7 @@ class _LoginState extends State<Login> {
     WidgetsBinding.instance.addPostFrameCallback((_){
       Store().openBoxes().then((_){
         print(Store().storeBox.get("jwtToken"));
-        if (Store().userBox.containsKey("_self")){
+        if (Store().storeBox.containsKey("userId")){
           Navigator.pushReplacementNamed(context, '/home');
         }else{
           updateCaptcha();
@@ -167,14 +167,19 @@ class _LoginState extends State<Login> {
         User user = new User(id: res.data["id"], username: res.data["username"], email: res.data["email"]);
         user.setRole(res.data["role"]);
 
-        Store().userBox.put("_self", user);
+        Store().userBox.put(user.id, user);
 
+        Store().storeBox.put("userId", user.id);
         Store().storeBox.put("jwtToken", res.data["jwtToken"]);
         Store().storeBox.put("refreshToken", res.data["refreshToken"]);
+
+        // after save token to db
+        user.updateAvatar();
 
 
         Navigator.pushReplacementNamed(context, '/home');
       } else {
+        print(res);
         updateCaptcha();
         ScaffoldMessenger.of(context)
             .showSnackBar(SnackBar(content: Text(res.data["message"])));

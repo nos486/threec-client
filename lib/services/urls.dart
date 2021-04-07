@@ -6,3 +6,12 @@ String apiUrl = "$baseUrl/api/v1";
 String loginPath = "$apiUrl/user/token/";
 String refreshPath = "$apiUrl/user/token/refresh";
 String captchaPath = "$apiUrl/captcha";
+
+
+String profilePath (String username){
+  return "$apiUrl/user/profile/$username";
+}
+
+String avatarPath (String id){
+  return "$apiUrl/user/avatar/$id/";
+}

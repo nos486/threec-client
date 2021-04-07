@@ -1,4 +1,6 @@
 
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threec/models/message.dart';
@@ -42,7 +44,9 @@ class _MessageWidgetState extends State<MessageWidget> {
             children: [
               PopupMenuButton<MessageMenu>(
                 child: CircleAvatar(
-                  child: Text(widget.message.author.username[0].toUpperCase(),style: TextStyle(color: Colors.cyan.shade900),),
+                  // child: Text(widget.message.author.username[0].toUpperCase(),style: TextStyle(color: Colors.cyan.shade900),),
+                  // child: Text(widget.message.author.avatar.length.toString()),
+                  backgroundImage : (widget.message.author.avatarUint8List != null) ? Image.memory(widget.message.author.avatarUint8List).image : null,
                   radius: 16,
                   backgroundColor: Colors.cyan.shade100,
                 ),
@@ -52,6 +56,7 @@ class _MessageWidgetState extends State<MessageWidget> {
                       // TODO: Handle this case.
                       break;
                     case MessageMenu.remove:
+                      print(widget.message.id);
                       socket.emit("deleteMessage",widget.message.id);
                       // widget.message.delete();
                       // widget.refresh();
