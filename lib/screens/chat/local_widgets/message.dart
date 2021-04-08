@@ -1,6 +1,6 @@
 
 import 'dart:typed_data';
-
+import 'package:threec/services/urls.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
 import 'package:threec/models/message.dart';
@@ -9,6 +9,7 @@ import 'package:intl/intl.dart' as intl;
 import 'package:threec/screens/chat/local_widgets/message_content.dart';
 import 'package:threec/screens/chat/local_widgets/message_decryptor.dart';
 import 'package:threec/socket.dart';
+import 'package:threec/store.dart';
 
 enum MessageMenu { reply,remove, copy}
 
@@ -46,7 +47,14 @@ class _MessageWidgetState extends State<MessageWidget> {
                 child: CircleAvatar(
                   // child: Text(widget.message.author.username[0].toUpperCase(),style: TextStyle(color: Colors.cyan.shade900),),
                   // child: Text(widget.message.author.avatar.length.toString()),
-                  backgroundImage : (widget.message.author.avatarUint8List != null) ? Image.memory(widget.message.author.avatarUint8List).image : null,
+                  backgroundImage : (widget.message.author.avatarUint8List != null) ? Image.memory(
+                      widget.message.author.avatarUint8List,
+                    gaplessPlayback: true,
+                  ).image : null,
+                  // backgroundImage : Image.network(
+                  //     avatarPath(widget.message.author.id),
+                  //     excludeFromSemantics: true,
+                  //     headers: {"Authorization":"Bearer " + Store().storeBox.get("jwtToken")}).image ,
                   radius: 16,
                   backgroundColor: Colors.cyan.shade100,
                 ),
@@ -103,7 +111,7 @@ class _MessageWidgetState extends State<MessageWidget> {
           SizedBox(width: 4,),
           Flexible(child: Container(
             decoration: BoxDecoration(
-              color: widget.message.author == widget.user ? Colors.cyan.withOpacity(0.8) : Colors.cyan.shade50.withOpacity(0.8),
+              color: widget.message.author.id == widget.user.id ? Colors.cyan.withOpacity(0.8) : Colors.cyan.shade50.withOpacity(0.8),
               borderRadius: BorderRadius.circular(15),
             ),
             child: Padding(
@@ -118,7 +126,7 @@ class _MessageWidgetState extends State<MessageWidget> {
                       fontWeight: FontWeight.bold,
                       letterSpacing: 0.2,
                       fontSize: 15,
-                      color: widget.message.author == widget.user ? Colors.white: Colors.cyan.shade900,
+                      color: widget.message.author.id == widget.user.id ? Colors.white: Colors.cyan.shade900,
                     ),
                   ),
                   SizedBox(height: 4,),

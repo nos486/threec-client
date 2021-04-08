@@ -15,6 +15,7 @@ class WS {
   Socket socket;
   bool firstConnect = true;
   Function chatRefresh = (){};
+  Function newMessage = (){};
   Function messageRefresh = (){};
   Function userRefresh = (){};
   Function socketIsConnectCallback = (){};
@@ -132,12 +133,17 @@ class WS {
     socket.on('newMessages', (messagesData) {
       for(var messageData in messagesData){
         Message message ;
+        Chat chat = Store().chatBox.get(messageData["chat"]);
 
         if(Store().messageBox.containsKey(messageData["id"])){
 
           //get saved message
           message = Store().messageBox.get(messageData["id"]);
-          if(message.hash != messageData["hash"]){
+          if(messageData["isDeleted"]){
+            chat.messages.cast<Message>().removeWhere((message){
+              return message.id == messageData["id"]  ;
+            });
+          }else if(message.hash != messageData["hash"]){
             message.text =  messageData["text"];
             message.hash =  messageData["hash"];
             message.decrypted = false;
@@ -146,7 +152,7 @@ class WS {
             print("message edit");
           }
           
-        }else{
+        }else if(! messageData["isDeleted"]){
 
           //create new message
           message = new Message();
@@ -162,21 +168,25 @@ class WS {
           message.decrypt();
           message.save();
 
-          Chat chat = Store().chatBox.get(messageData["chat"]);
-          chat.messages.add(message);
-          chat.save();
+          newMessage(chat,message);
+
+          // chat.messages.add(message);
         }
+
+        chat.save();
       }
 
-      messageRefresh();
+      // messageRefresh();
     });
 
     socket.on('deleteMessage', (messageData) {
+      print("messageData");
       print(messageData);
       Chat chat =  Store().chatBox.get(messageData["chat"]);
       chat.messages.cast<Message>().removeWhere((message){
         return message.id == messageData["id"]  ;
       });
+      chat.save();
 
       messageRefresh();
     });

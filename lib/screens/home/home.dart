@@ -1,6 +1,7 @@
 import 'package:encrypt/encrypt.dart' as encrypt;
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart';
+import 'package:threec/models/message.dart';
 import 'package:threec/screens/chat/chat.dart';
 import 'package:threec/screens/home/HomeLayout.dart';
 import 'package:threec/models/chat.dart';
@@ -32,6 +33,11 @@ class _HomeState extends State<Home> {
       ws.chatRefresh = (){
         setState(() {
           chats = Store().chatBox.values.toList();
+        });
+      };
+      ws.newMessage = (Chat chat,Message message){
+        setState(() {
+          chat.messages.add(message);
         });
       };
       ws.userRefresh = (){

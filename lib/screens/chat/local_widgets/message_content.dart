@@ -17,7 +17,7 @@ class MessageContent extends StatelessWidget {
     return Text(
       message.decryptedText,
       style: TextStyle(
-        color: message.author == user ? Colors.white : Colors.cyan.shade900,
+        color: message.author.id == user.id ? Colors.white : Colors.cyan.shade900,
       ),
     );
   }

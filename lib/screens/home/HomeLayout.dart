@@ -66,7 +66,8 @@ class _HomeLayoutState extends State<HomeLayout> {
       title: Row(
         children: [
           CircleAvatar(
-            backgroundImage : (widget.user.avatarUint8List != null) ? Image.memory(widget.user.avatarUint8List).image : null,
+            // backgroundImage : (widget.user.avatarUint8List != null) ? Image.memory(widget.user.avatarUint8List).image : null,
+            backgroundImage : Image.network(avatarPath(widget.user.id),headers: {"Authorization":"Bearer " + Store().storeBox.get("jwtToken")}).image ,
             backgroundColor: Colors.cyan,
             minRadius: 40.0,
           ),
